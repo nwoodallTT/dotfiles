@@ -55,6 +55,36 @@ if [ -x "$TPM/bin/install_plugins" ]; then
   "$TPM/bin/install_plugins" || true
 fi
 
+# pyright is a Node app; the system node on older Ubuntu is v12, whose parser
+# rejects the optional-chaining in pyright's bundle and the server exits before
+# attaching. Pin a modern node under ~/.local (already first on PATH via
+# .bashrc) so pyright runs without touching the system node.
+NODE_VERSION="v20.18.1"
+have_node_18() {
+  command -v node >/dev/null 2>&1 || return 1
+  [ "$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)" -ge 18 ]
+}
+if have_node_18; then
+  echo "ok    node $(node --version)"
+else
+  case "$(uname -m)" in
+    x86_64) NARCH=x64 ;;
+    aarch64) NARCH=arm64 ;;
+    *) echo "skip  node: unsupported arch $(uname -m)"; NARCH="" ;;
+  esac
+  if [ -n "$NARCH" ]; then
+    echo "fetch node $NODE_VERSION"
+    NTMP="$(mktemp -d)"
+    NTARBALL="node-$NODE_VERSION-linux-$NARCH"
+    curl -fsSL "https://nodejs.org/dist/$NODE_VERSION/$NTARBALL.tar.xz" -o "$NTMP/node.tar.xz"
+    tar -xJf "$NTMP/node.tar.xz" -C "$NTMP"
+    mkdir -p "$HOME/.local"
+    cp -a "$NTMP/$NTARBALL/." "$HOME/.local/"
+    rm -rf "$NTMP"
+    echo "link  node -> $HOME/.local/bin/node ($("$HOME/.local/bin/node" --version))"
+  fi
+fi
+
 echo
 echo "Done. Open a new shell, then run 'tmux' (plugins auto-install/restore)."
 echo "Neovim bootstraps lazy.nvim on first launch."
