@@ -21,6 +21,7 @@ cd ~/dotfiles
 | `.tmux.conf` | tmux + TPM (resurrect, continuum) |
 | `.config/nvim/init.lua`, `lazy-lock.json` | Neovim (lazy.nvim) |
 | `.config/helix/config.toml`, `languages.toml` | Helix (clangd, pyright, ruff) |
+| `.config/lazygit/config.yml` | lazygit (opens files in Helix) |
 | `.bashrc`, `.profile` | bash |
 
 ## Notes
@@ -34,5 +35,8 @@ cd ~/dotfiles
   (`clangd` for C/C++, `pyright` for Python); C/C++ also wants a
   `compile_commands.json` in the project root. Browse themes live with
   `:theme <name>`.
+- **cli tools:** `install.sh` fetches prebuilt binaries into `~/.local/bin`
+  (needs `gh`): `lazygit`, `fd`, `bat`, `delta`, `zoxide`. delta is wired as
+  git's pager and `zoxide` is initialized in `.bashrc` (`z <dir>` to jump).
 - **bash:** `.bashrc`/`.profile` may carry machine-specific `PATH`/env. Review
   after pulling onto a new box.

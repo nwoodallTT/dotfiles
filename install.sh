@@ -16,6 +16,7 @@ FILES=(
   .config/nvim/lazy-lock.json
   .config/helix/config.toml
   .config/helix/languages.toml
+  .config/lazygit/config.yml
 )
 
 link() {
@@ -70,6 +71,37 @@ fi
 if ! command -v ruff >/dev/null 2>&1; then
   echo "installing ruff"
   curl -LsSf https://astral.sh/ruff/install.sh | sh || true
+fi
+
+# Prebuilt CLI binaries into ~/.local/bin via gh. Non-fatal: a box without gh
+# keeps the symlinked configs and just lacks these tools.
+BIN="$HOME/.local/bin"; mkdir -p "$BIN"
+gh_bin() { # repo, asset-glob, binary-name
+  command -v "$3" >/dev/null 2>&1 && { echo "ok    $3"; return; }
+  command -v gh >/dev/null 2>&1 || { echo "skip  $3 (no gh)"; return; }
+  local tmp; tmp="$(mktemp -d)"
+  if gh release download -R "$1" -p "$2" -D "$tmp" 2>/dev/null; then
+    tar xzf "$tmp"/*.tar.gz -C "$tmp" 2>/dev/null || true
+    local f; f="$(find "$tmp" -type f -name "$3" | head -1)"
+    [ -n "$f" ] && install -m755 "$f" "$BIN/$3" && echo "install $3" || echo "skip  $3 (binary not found)"
+  else
+    echo "skip  $3 (download failed)"
+  fi
+  rm -rf "$tmp"
+}
+gh_bin jesseduffield/lazygit '*linux_x86_64.tar.gz'          lazygit
+gh_bin sharkdp/fd            '*-x86_64-unknown-linux-gnu.tar.gz'  fd
+gh_bin sharkdp/bat           '*-x86_64-unknown-linux-gnu.tar.gz'  bat
+gh_bin dandavison/delta      '*-x86_64-unknown-linux-gnu.tar.gz'  delta
+gh_bin ajeetdsouza/zoxide    '*-x86_64-unknown-linux-musl.tar.gz' zoxide
+
+# delta as git's pager (idempotent; leaves identity/credentials untouched)
+if command -v delta >/dev/null 2>&1; then
+  git config --global core.pager delta
+  git config --global interactive.diffFilter 'delta --color-only'
+  git config --global delta.navigate true
+  git config --global delta.line-numbers true
+  git config --global merge.conflictStyle zdiff3
 fi
 
 echo

@@ -23,7 +23,7 @@ normal = "block"
 select = "underline"
 
 [editor.file-picker]
-hidden = false             # show dotfiles in the picker too
+hidden = true              # skip hidden dirs — faster picker on large repos
 
 [editor.indent-guides]
 render = true
