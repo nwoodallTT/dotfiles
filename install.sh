@@ -14,6 +14,8 @@ FILES=(
   .profile
   .config/nvim/init.lua
   .config/nvim/lazy-lock.json
+  .config/helix/config.toml
+  .config/helix/languages.toml
 )
 
 link() {
@@ -53,6 +55,21 @@ if [ ! -d "$TPM" ]; then
 fi
 if [ -x "$TPM/bin/install_plugins" ]; then
   "$TPM/bin/install_plugins" || true
+fi
+
+# Helix + its Python formatter. Non-fatal: a box without snap still gets the
+# symlinked config, just no editor until installed by hand.
+if ! command -v hx >/dev/null 2>&1; then
+  if command -v snap >/dev/null 2>&1; then
+    echo "installing helix"
+    sudo snap install helix --classic || true
+  else
+    echo "skip  helix (no snap; install manually)"
+  fi
+fi
+if ! command -v ruff >/dev/null 2>&1; then
+  echo "installing ruff"
+  curl -LsSf https://astral.sh/ruff/install.sh | sh || true
 fi
 
 echo

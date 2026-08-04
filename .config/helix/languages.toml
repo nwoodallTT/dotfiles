@@ -1,0 +1,17 @@
+# pyright = types + go-to-definition; ruff = lint + formatting.
+[[language]]
+name = "python"
+language-servers = ["pyright", "ruff"]
+auto-format = false        # run `:format` on demand; flip to true for format-on-save
+
+# C/C++ use clangd (on PATH). clangd needs compile_commands.json in the
+# project root for accurate cross-file go-to-definition.
+[[language]]
+name = "cpp"
+language-servers = ["clangd"]
+auto-format = false
+
+[[language]]
+name = "c"
+language-servers = ["clangd"]
+auto-format = false

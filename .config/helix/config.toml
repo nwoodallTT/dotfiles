@@ -1,0 +1,32 @@
+theme = "onedark"
+
+[editor]
+true-color = true          # TERM=screen under-reports color; force truecolor
+mouse = true
+line-number = "absolute"
+cursorline = true
+bufferline = "multiple"    # open files show as tabs (IDE feel)
+color-modes = true         # mode indicator changes color
+auto-format = false         # don't reformat files on save unless you ask
+
+[editor.statusline]
+left  = ["mode", "spinner", "file-name", "file-modification-indicator"]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-type"]
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = false
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false             # show dotfiles in the picker too
+
+[editor.indent-guides]
+render = true
+
+[editor.soft-wrap]
+enable = true
