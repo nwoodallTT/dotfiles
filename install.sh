@@ -12,8 +12,6 @@ FILES=(
   .tmux.conf
   .bashrc
   .profile
-  .config/nvim/init.lua
-  .config/nvim/lazy-lock.json
   .config/helix/config.toml
   .config/helix/languages.toml
   .config/lazygit/config.yml
@@ -89,21 +87,7 @@ gh_bin() { # repo, asset-glob, binary-name
   fi
   rm -rf "$tmp"
 }
-gh_bin jesseduffield/lazygit '*linux_x86_64.tar.gz'          lazygit
-gh_bin sharkdp/fd            '*-x86_64-unknown-linux-gnu.tar.gz'  fd
-gh_bin sharkdp/bat           '*-x86_64-unknown-linux-gnu.tar.gz'  bat
-gh_bin dandavison/delta      '*-x86_64-unknown-linux-gnu.tar.gz'  delta
-gh_bin ajeetdsouza/zoxide    '*-x86_64-unknown-linux-musl.tar.gz' zoxide
-
-# delta as git's pager (idempotent; leaves identity/credentials untouched)
-if command -v delta >/dev/null 2>&1; then
-  git config --global core.pager delta
-  git config --global interactive.diffFilter 'delta --color-only'
-  git config --global delta.navigate true
-  git config --global delta.line-numbers true
-  git config --global merge.conflictStyle zdiff3
-fi
+gh_bin jesseduffield/lazygit '*linux_x86_64.tar.gz' lazygit
 
 echo
 echo "Done. Open a new shell, then run 'tmux' (plugins auto-install/restore)."
-echo "Neovim bootstraps lazy.nvim on first launch."

@@ -125,15 +125,7 @@ export TT_DEVICE_MCP_PORT=$((8333 + $(id -u) % 500))
 command -v tt-device-mcp >/dev/null 2>&1 && tt-device-mcp --port "$TT_DEVICE_MCP_PORT" daemon start >/dev/null 2>&1 || true
 # <<< tt-device-mcp multi-tenant <<<
 
-# open tt-metal in nvim on the file tree
-alias ttm='cd ~/tt-metal && nvim .'
+alias ttm='cd ~/tt-metal'
 export PATH="$HOME/.local/bin:$PATH"
 export EDITOR=hx
 export VISUAL=hx
-
-# fzf sources files via fd: faster and gitignore-aware
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-# zoxide: `z <dir>` jumps by frecency, `zi` picks interactively
-eval "$(zoxide init bash)"
